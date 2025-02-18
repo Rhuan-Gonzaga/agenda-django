@@ -39,5 +39,24 @@ class ContactForm(forms.ModelForm):
     def clean(self):
         cleaned_data = self.cleaned_data
 
-        self.add_error('first_name',ValidationError("Mansagem de error",code='invald'))
+        #self.add_error('first_name',ValidationError("Mansagem de error",code='invald'))
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
+
+        if first_name == last_name:
+            msg = ValidationError('Primeiro nome não pode ser igual ao segundo',code='invalid')
+            self.add_error('first_name',msg)
+            self.add_error('last_name',msg)
+
         return super().clean()
+    
+    #Validando um campo especiico
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+
+        if first_name == 'ABC':
+            raise ValidationError(
+                'Não digite ABC neste campo',
+                code = 'invalid'
+            )
+        return first_name
